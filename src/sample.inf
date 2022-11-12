@@ -1,0 +1,64 @@
+[Version]
+Signature   = "$WINDOWS NT$"
+Class       = Extension
+ClassGuid   = {e2f84ce7-8efa-411c-aa69-97454ca4cb57}
+Provider    = %ProviderName%
+ExtensionId = {1d641578-54d2-404d-85de-79bb01461ac2}
+DriverVer = 09/16/2022,19.12.5.784
+CatalogFile = sysvad.cat
+PnpLockDown = 1
+
+[Manufacturer]
+%MfgName% = DeviceExtensions,NTamd64
+
+[DeviceExtensions.NTamd64]
+%Device.ExtensionDesc% = DeviceExtension_Install,Root\sysvad_ComponentizedAudioSample 
+
+[DeviceExtension_Install]
+
+[DeviceExtension_Install.HW]
+AddReg = FriendlyName_AddReg
+
+[FriendlyName_AddReg]
+HKR,,FriendlyName,,%ExtendedFriendlyName%
+
+[DeviceExtension_Install.Components]
+AddComponent = SwapApo,,Apo_AddComponent
+AddComponent = MsApoFxProxy,,Apo_AddComponent_Proxy
+
+[Apo_AddComponent]
+ComponentIDs = VEN_SMPL&CID_APO
+Description = "Audio Proxy APO Sample"
+
+[Apo_AddComponent_Proxy]
+ComponentIDs = VEN_MSFT&CID_PROXYAPO
+Description = "MSFT Proxy APO"
+
+
+[DeviceExtensions.I.APO]
+AddReg = APO.I.Association0.AddReg
+
+;======================================================
+; APO per-interface registry
+;======================================================
+[APO.I.Association0.AddReg]
+; Instruct audio endpoint builder to set the CLSIDs for stream, mode, and endpoint APOs
+; into the effects property store
+HKR,FX\0,%PKEY_CompositeFX_StreamEffectClsid%,0x00010000,%RUST_APO_FX_STREAM_CLSID%
+
+; The following line adds the APO to the keyword spotter pin on this endpoint
+; HKR,FX\0,%PKEY_FX_KeywordDetector_EndpointEffectClsid%,,%KWS_FX_ENDPOINT_CLSID%
+
+
+[Strings]
+MfgName              = "TODO-Set-Manufacturer"
+ProviderName         = "TODO-Set-Provider"
+Device.ExtensionDesc = "Sample Device Extension"
+ExtendedFriendlyName = "SYSVAD (with APO Extensions)"
+
+PKEY_CompositeFX_StreamEffectClsid  = "{D04E05A6-594B-4fb6-A80D-01AF5EED7D1D},13"
+
+; Driver developers would replace these CLSIDs with those of their own APOs
+RUST_APO_FX_STREAM_CLSID    = "{0129658B-8ED4-47E7-BFA5-E2933B128767}"
+
+REG_MULTI_SZ = 0x00010000 ; FLG_ADDREG_TYPE_MULTI_SZ
